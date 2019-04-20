@@ -1,0 +1,37 @@
+﻿@model BookGUI.ViewModels.CategoryBooksViewModel
+@{
+    ViewData["Title"] = "GetCategoryById";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@ViewBag.Message</h4>
+<div>
+    <h1>Category Details</h1>
+    <br />
+    <div>
+        <p>
+            <strong>Category Name:</strong> @Model.Category.Name
+        </p>
+        <div class="form-group text-center">
+            <a class="btn btn-sm btn-primary" asp-controller="Categories" asp-action="UpdateCategory"
+               asp-route-categoryId="@Model.Category.Id">Update Category</a>
+            <a class="btn btn-sm btn-danger" asp-controller="Categories" asp-action="DeleteCategory"
+               asp-route-categoryId="@Model.Category.Id">Delete Category</a>
+        </div>
+    </div>
+    <br /><br />
+    <div>
+        <h4>@ViewBag.BookMessage</h4>
+        @foreach(var item in Model.Books)
+        {
+            <div>
+                <p>
+                    <strong>Title:</strong>
+                    <span>@item.Title</span>
+                    <a asp-controller="Home" asp-action="GetBookById"
+                       asp-route-bookId="@item.Id">Book Details</a>
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
