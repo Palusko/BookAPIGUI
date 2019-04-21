@@ -1,0 +1,54 @@
+﻿@model BookGUI.ViewModels.ReviewerReviewsBooksViewModel
+@{
+    ViewData["Title"] = "GetReviewerById";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@ViewBag.ReviewerMessage</h4>
+<div>
+    <h1>Reviewer Details</h1>
+    <br />
+    <div>
+        <p>
+            <strong>Reviewer Name:</strong> @Model.Reviewer.FirstName @Model.Reviewer.LastName
+        </p>
+        <div class="form-group text-center">
+            <a class="btn btn-sm btn-primary" asp-controller="Reviewers" asp-action="UpdateReviewer"
+               asp-route-reviewerId="@Model.Reviewer.Id">Update Reviewer</a>
+            <a class="btn btn-sm btn-danger" asp-controller="Reviewers" asp-action="DeleteReviewer"
+               asp-route-reviewerId="@Model.Reviewer.Id">Delete Reviewer</a>
+        </div>
+    </div>
+    <br /><br />
+    <div>
+        <h4>@ViewBag.ReviewMessage</h4>
+        @foreach (var item in Model.ReviewBook)
+        {
+        <div>
+            <p>
+                <strong>Title:</strong>
+                <span>@item.Value.Title</span>
+                <a asp-controller="Home" asp-action="GetBookById"
+                   asp-route-bookId="@item.Value.Id">Book Details</a>
+            </p>
+            <p>
+                <strong>Headline:</strong>
+                <span>@item.Key.Headline</span>
+                <a asp-controller="Reviews" asp-action="GetReviewById"
+                   asp-route-reviewId="@item.Key.Id">Review Details</a>
+            </p>
+            <p>
+                <strong>Rating:</strong>
+                <span>@item.Key.Rating</span>
+            </p>
+            <p>
+                <strong>Review Text:</strong>
+                <span>@item.Key.ReviewText</span>
+            </p>
+        </div>
+        <br /><br />
+        }
+    </div>
+</div>
+
+
+

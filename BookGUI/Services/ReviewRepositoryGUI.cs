@@ -17,7 +17,7 @@ namespace BookGUI.Services
             {
                 client.BaseAddress = new Uri("http://localhost:60039/api/");
 
-                var response = client.GetAsync($"reviews/{reviewId}/review");
+                var response = client.GetAsync($"reviews/{reviewId}/book");
                 response.Wait();
 
                 var result = response.Result;

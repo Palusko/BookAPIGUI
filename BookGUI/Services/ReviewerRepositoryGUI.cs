@@ -92,7 +92,7 @@ namespace BookGUI.Services
             {
                 client.BaseAddress = new Uri("http://localhost:60039/api/");
 
-                var response = client.GetAsync($"reviewers/{reviewerId}/reviewer");
+                var response = client.GetAsync($"reviewers/{reviewerId}/reviews");
                 response.Wait();
 
                 var result = response.Result;
