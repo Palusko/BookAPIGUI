@@ -1,5 +1,6 @@
 ﻿using BookApiProject.Dtos;
 using BookGUI.Services;
+using BookGUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace BookGUI.Controllers
     public class CountriesController : Controller
     {
         ICountryRepositoryGUI _countryRepository;
+        IAuthorRepositoryGUI _authorRespository;
 
-        public CountriesController(ICountryRepositoryGUI countryRepository)
+        public CountriesController(ICountryRepositoryGUI countryRepository, IAuthorRepositoryGUI authorRespository)
         {
             _countryRepository = countryRepository;
+            _authorRespository = authorRespository;
         }
 
         public IActionResult Index()
@@ -42,7 +45,19 @@ namespace BookGUI.Controllers
                 country = new CountryDto();
             }
 
-            return View(country);
+            var authors = _countryRepository.GetAuthorsFromACountry(countryId);
+            if (authors.Count() <= 0)
+            {
+                ViewBag.AuthorMessage = $"There are no authors from country with id {country.Id}";                    
+            }
+
+            var countryAuthorsViewModel = new CountryAuthorsViewModel
+            {
+                Country = country,
+                Authors = authors
+            };
+
+            return View(countryAuthorsViewModel);
         }
     }
 }

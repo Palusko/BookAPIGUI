@@ -1,0 +1,59 @@
+﻿@model BookGUI.ViewModels.AuthorCountryBooksCategoriesViewModel
+@{
+    ViewData["Title"] = "GetAuthorById";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@ViewBag.Message</h4>
+<div>
+    <h1>Author Details</h1>
+    <br />
+    <div>
+        <p>
+            <strong>Author Name:</strong> @Model.Author.FirstName @Model.Author.LastName
+        </p>
+        <p>
+            <strong>Author's Country:</strong> @Model.Country.Name
+            <a asp-controller="Countries" asp-action="GetCountryById"
+               asp-route-countryId="@Model.Country.Id"> | Country Details</a>
+        </p>
+        <div class="form-group text-center">
+            <a class="btn btn-sm btn-primary" asp-controller="Authors" asp-action="UpdateAuthor"
+               asp-route-authorId="@Model.Author.Id">Update Author</a>
+            <a class="btn btn-sm btn-danger" asp-controller="Authors" asp-action="DeleteAuthor"
+               asp-route-authorId="@Model.Author.Id">Delete Author</a>
+        </div>
+    </div>
+    <br /><br />
+    <div>
+        <h4>@ViewBag.BookMessage</h4>
+        @foreach (var item in Model.BookCategories)
+        {
+            <div>
+                <p>
+                    <strong>Title:</strong>
+                    <span>@item.Key.Title</span>
+                    <a asp-controller="Home" asp-action="GetBookById"
+                       asp-route-bookId="@item.Key.Id">Book Details</a>
+                </p>
+                <table>
+                    <tr>
+                        <th style="float:left; margin-right:15px;">Category:</th>
+                        @foreach(var category in item.Value)
+                        {
+                            <td style="float:left; margin-right:15px;">@category.Name
+                                <a asp-controller="Categories" asp-action="GetCategoryById"
+                                   asp-route-categoryId="@category.Id">Category Details</a>
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <br /><br />
+        }
+    </div>
+</div>
+
+
+
+
+

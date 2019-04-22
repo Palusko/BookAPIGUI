@@ -1,0 +1,53 @@
+﻿@model BookGUI.ViewModels.ReviewReviewerBookViewModel
+@{
+    ViewData["Title"] = "GetReviewById";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@ViewBag.Message</h4>
+<div>
+    <h2>Review Details for @Model.Book.Title</h2>
+    <br />
+    <div>
+        <p>
+            <strong>Reviewer Name:</strong><span>
+                @Model.Reviewer.FirstName @Model.Reviewer.LastName
+
+                <a asp-controller="Reviewers" asp-action="GetReviewerById"
+                   asp-route-reviewerId="@Model.Reviewer.Id">| Reviewer Details |</a>
+                <a asp-controller="Reviewers" asp-action="DeleteReviewer"
+                   asp-route-reviewerId="@Model.Reviewer.Id">Delete Reviewer</a>
+            </span>
+        </p>
+        <p>
+            <strong>Book Title:</strong><span>
+                @Model.Book.Title
+
+                <a asp-controller="Books" asp-action="GetBookById"
+                   asp-route-bookId="@Model.Book.Id"> | Book Details |</a>
+                <a asp-controller="Books" asp-action="DeleteBook"
+                   asp-route-bookId="@Model.Book.Id">Delete Book</a>
+            </span>
+        </p>
+        <p>
+            <strong>Review Headline:</strong><span> @Model.Review.Headline </span>
+        </p>
+        <p>
+            <strong>Review Rating:</strong><span> @Model.Review.Rating </span>
+        </p>
+        <p>
+            <strong>Review Text:</strong><span>@Model.Review.ReviewText </span>
+        </p>
+    </div>
+    <br /><br />
+    <div class="form-group text-center">
+        <a class="btn btn-sm btn-primary" asp-controller="Reviews" asp-action="UpdateReview"
+           asp-route-reviewId="@Model.Review.Id">Update Review</a>
+        <a class="btn btn-sm btn-danger" asp-controller="Reviews" asp-action="DeleteReview"
+           asp-route-reviewId="@Model.Review.Id">Delete Review</a>
+    </div>
+</div>
+
+
+
+
+
