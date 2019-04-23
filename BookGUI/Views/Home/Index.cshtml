@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BookGUI.ViewModels.BookAuthorsCategoriesRatingViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@ViewBag.Message</h4>
+<div>
+    <h2>All Books</h2>
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>ISBN</th>
+            <th>Published</th>
+            <th>Rating</th>
+            <th>Categories</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Book.Title</td>
+                <td>
+                    @{
+                        foreach (var author in item.Authors)
+                        {
+                            @author.FirstName @author.LastName <a asp-controller="Authors" asp-action="GetAuthorById"
+                                                                  asp-route-authorId="@author.Id">View</a><br />
+                        }
+                    }
+                </td>
+                <td>@item.Book.Isbn</td>
+                <td>@String.Format("{0:MMM yyyy}", item.Book.DatePublished)</td>
+                @{
+                    if (item.Rating > 0)
+                    {
+                        <td>@String.Format("{0:0.##}", item.Rating) Stars</td>
+                    }
+                    else
+                    {
+                        <td>No Rating Yet</td>
+                    }
+                }
+                <td>
+                    @{
+                        foreach (var category in item.Categories)
+                        {
+                            @category.Name <a asp-controller="Categories" asp-action="GetCategoryById"
+                                              asp-route-categoryId="@category.Id">View</a><br />
+                        }
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Home" asp-action="GetBookById"
+                       asp-route-baookId="@item.Book.Id">View Book</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
