@@ -1,0 +1,101 @@
+﻿@model BookGUI.ViewModels.CompleteBookViewModel
+@{
+    ViewData["Title"] = "GetBookById";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h3>@ViewBag.BookMessage</h3>
+<div>
+    <h2>Book Details</h2>
+    <br />
+    <table class="table">
+        <tr>
+            <th>Title:</th>
+            <td>@Model.Book.Title</td>
+        </tr>
+        <tr>
+            <th>ISBN:</th>
+            <td>@Model.Book.Isbn</td>
+        </tr>
+        <tr>
+            <th>Date Published:</th>
+            <td>@String.Format("{0:MMM yyyy}", Model.Book.DatePublished)</td>
+        </tr>
+        <tr>
+            <th>Rating:</th>
+            @{
+                if (Model.Rating > 0)
+                {
+                    <td>@String.Format("{0:0.##}", Model.Rating) Stars</td>
+                }
+                else
+                {
+                    <td>No Rating Yet</td>
+                }
+            }
+        </tr>
+        <tr>
+            <th>Authors:</th>
+            <td>
+                @foreach (var author in Model.AuthorsCountries)
+                {
+                   <span>@author.Key.FirstName</span> <span>@author.Key.LastName</span> <a asp-controller="Authors" asp-action="GetAuthorById"
+                                                                  asp-route-authorId="@author.Key.Id"> View Details</a><br />
+                    <span>Country: </span>@author.Value.Name <a asp-controller="Countries" asp-action="GetCountryById"
+                                                               asp-route-countryId="@author.Value.Id"> View Details</a><br />
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>Categories:</th>
+            <td>
+                @foreach (var category in Model.Categories)
+                {
+                    @category.Name <a asp-controller="Categories" asp-action="GetCategoryById"
+                                      asp-route-categoryId="@category.Id">View Details</a><br />
+                }
+            </td>
+        </tr>
+    </table>
+    <br />
+    <div class="form-group text-center">
+        <a class="btn btn-sm btn-primary" asp-controller="Home" asp-action="UpdateBook"
+           asp-route-bookId="@Model.Book.Id">Update Book</a>
+        <a class="btn btn-sm btn-danger" asp-controller="Home" asp-action="DeleteBook"
+           asp-route-bookId="@Model.Book.Id">Delete Book</a>
+    </div>
+    <br /><br />
+    <h4>@ViewBag.ReviewsMessage</h4>
+    @foreach(var item in Model.ReviewsReviewers)
+    {
+          <div>
+              <p>
+                  <strong>Headline:</strong>
+                  <span>
+                      @item.Key.Headline <a asp-controller="Reviews" asp-action="GetReviewById"
+                                            asp-route-reviewId="@item.Key.Id">View Details</a>
+                  </span>
+              </p>
+              <p>
+                  <strong>Reviewer:</strong>
+                  <span>
+                      @item.Value.FirstName @item.Value.LastName <a asp-controller="Reviewers" asp-action="GetReviewerById"
+                                                                    asp-route-reviewerId="@item.Value.Id">View Details</a>
+                  </span>
+              </p>
+              <p>
+                  <strong>Rating:</strong>
+                  <span>
+                      @item.Key.Rating
+                  </span>
+              </p>
+              <p>
+                  <strong>Review Text:</strong>
+                  <span>
+                      @item.Key.ReviewText
+                  </span>
+              </p>
+              <br /><br />
+          </div>
+    }
+</div>
+

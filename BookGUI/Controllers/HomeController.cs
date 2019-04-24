@@ -1,4 +1,5 @@
-﻿using BookGUI.Services;
+﻿using BookApiProject.Dtos;
+using BookGUI.Services;
 using BookGUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -62,6 +63,65 @@ namespace BookGUI.Controllers
             }
 
             return View(bookAuthorsCategoriesRatingViewModel);
+        }
+
+        public IActionResult GetBookById(int bookId)
+        {
+            var completeBookViewModel = new CompleteBookViewModel
+            {
+                AuthorsCountries = new Dictionary<AuthorDto, CountryDto>(),
+                ReviewsReviewers = new Dictionary<ReviewDto, ReviewerDto>()
+            };
+
+            var book = _bookRepository.GetBookById(bookId);
+
+            if (book == null)
+            {
+                ModelState.AddModelError("", "Some kind of error getting book");
+                book = new BookDto();
+            }
+
+            var categories = _categoryRepository.GetAllCategoriesOfABook(bookId);
+            if (categories.Count() <= 0)
+            {
+                ModelState.AddModelError("", "Some kind of error getting categories");
+            }
+
+            var rating = _bookRepository.GetBookRating(bookId);
+            completeBookViewModel.Book = book;
+            completeBookViewModel.Categories = categories;
+            completeBookViewModel.Rating = rating;
+
+            var authors = _authorRepository.GetAuthorsOfABook(bookId);
+            if (authors.Count() <= 0)
+            {
+                ModelState.AddModelError("", "Some kind of error getting authors");
+            }
+
+            foreach (var author in authors)
+            {
+                var country = _countryRepository.GetCountryOfAnAuthor(author.Id);
+                completeBookViewModel.AuthorsCountries.Add(author, country);
+            }
+
+            var reviews = _reviewRepository.GetReviewsOfABook(bookId);
+            if (reviews.Count() <= 0)
+            {
+                ViewBag.ReviewsMessage = "There are no reviews yet";
+            }
+
+            foreach (var review in reviews)
+            {
+                var reviewer = _reviewerRepository.GetReviewerOfAReview(review.Id);
+                completeBookViewModel.ReviewsReviewers.Add(review, reviewer);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.BookMessage = "There was an error retrieving a complete book record";
+            }
+
+            return View(completeBookViewModel);
         }
     }
 }
