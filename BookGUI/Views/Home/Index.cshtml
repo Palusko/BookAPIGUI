@@ -25,7 +25,7 @@
                     @{
                         foreach (var author in item.Authors)
                         {
-                            @author.FirstName @author.LastName <a asp-controller="Authors" asp-action="GetAuthorById"
+                    <span>@author.FirstName</span> <span>@author.LastName</span> <a asp-controller="Authors" asp-action="GetAuthorById"
                                                                   asp-route-authorId="@author.Id">View</a><br />
                         }
                     }

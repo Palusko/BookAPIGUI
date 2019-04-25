@@ -38,10 +38,10 @@
             <td>
                 @foreach (var author in Model.AuthorsCountries)
                 {
-                   <span>@author.Key.FirstName</span> <span>@author.Key.LastName</span> <a asp-controller="Authors" asp-action="GetAuthorById"
-                                                                  asp-route-authorId="@author.Key.Id"> View Details</a><br />
+                    <span>@author.Key.FirstName</span> <span>@author.Key.LastName</span> <a asp-controller="Authors" asp-action="GetAuthorById"
+                                                                                            asp-route-authorId="@author.Key.Id">View Details</a><br />
                     <span>Country: </span>@author.Value.Name <a asp-controller="Countries" asp-action="GetCountryById"
-                                                               asp-route-countryId="@author.Value.Id"> View Details</a><br />
+                                                                asp-route-countryId="@author.Value.Id">View Details</a><br />
                 }
             </td>
         </tr>
@@ -62,40 +62,42 @@
            asp-route-bookId="@Model.Book.Id">Update Book</a>
         <a class="btn btn-sm btn-danger" asp-controller="Home" asp-action="DeleteBook"
            asp-route-bookId="@Model.Book.Id">Delete Book</a>
+        <a class="btn btn-sm btn-info" asp-controller="Reviews" asp-action="CreateReview"
+           asp-route-bookId="@Model.Book.Id" asp-route-bookTitle="@Model.Book.Title">Write Review</a>
     </div>
     <br /><br />
     <h4>@ViewBag.ReviewsMessage</h4>
-    @foreach(var item in Model.ReviewsReviewers)
+    @foreach (var item in Model.ReviewsReviewers)
     {
-          <div>
-              <p>
-                  <strong>Headline:</strong>
-                  <span>
-                      @item.Key.Headline <a asp-controller="Reviews" asp-action="GetReviewById"
-                                            asp-route-reviewId="@item.Key.Id">View Details</a>
-                  </span>
-              </p>
-              <p>
-                  <strong>Reviewer:</strong>
-                  <span>
-                      @item.Value.FirstName @item.Value.LastName <a asp-controller="Reviewers" asp-action="GetReviewerById"
-                                                                    asp-route-reviewerId="@item.Value.Id">View Details</a>
-                  </span>
-              </p>
-              <p>
-                  <strong>Rating:</strong>
-                  <span>
-                      @item.Key.Rating
-                  </span>
-              </p>
-              <p>
-                  <strong>Review Text:</strong>
-                  <span>
-                      @item.Key.ReviewText
-                  </span>
-              </p>
-              <br /><br />
-          </div>
+        <div>
+            <p>
+                <strong>Headline:</strong>
+                <span>
+                    @item.Key.Headline <a asp-controller="Reviews" asp-action="GetReviewById"
+                                          asp-route-reviewId="@item.Key.Id">View Details</a>
+                </span>
+            </p>
+            <p>
+                <strong>Reviewer:</strong>
+                <span>
+                    @item.Value.FirstName @item.Value.LastName <a asp-controller="Reviewers" asp-action="GetReviewerById"
+                                                                  asp-route-reviewerId="@item.Value.Id">View Details</a>
+                </span>
+            </p>
+            <p>
+                <strong>Rating:</strong>
+                <span>
+                    @item.Key.Rating
+                </span>
+            </p>
+            <p>
+                <strong>Review Text:</strong>
+                <span>
+                    @item.Key.ReviewText
+                </span>
+            </p>
+            <br /><br />
+        </div>
     }
 </div>
 
