@@ -1,0 +1,19 @@
+﻿@model BookApiProject.Dtos.CountryDto
+@{
+    ViewData["Title"] = "DeleteCountry";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Delete Country @Model.Name ?</h1>
+<br />
+<form asp-controller="Countries" asp-action="DeleteCountry" asp-route-countryId="@Model.Id" 
+asp-route-countryName="@Model.Name" method="post">
+<div>
+    <p>
+        <strong>Country Name: </strong> @Model.Name
+    </p>
+    <input type="submit" value="Delete Country" class="btn btn-sm btn-danger" />
+</div>
+</form>
+<a asp-controller="Countries" asp-action="GetCountryById" asp-route-countryId="@Model.Id" class="btn btn-sm btn-primary">
+Cancel
+</a>

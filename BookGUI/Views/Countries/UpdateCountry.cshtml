@@ -1,0 +1,23 @@
+﻿@model BookApiProject.Dtos.CountryDto
+@{
+    ViewData["Title"] = "UpdateCountry";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Edit Country</h1>
+<form asp-controller="Countries" asp-action="UpdateCountry" method="post">
+    <div class="form-group">
+        <input asp-for="Id" hidden />
+        <div>
+            <label asp-for="Name">Country Name:</label>
+        </div>
+        <div>
+            <input asp-for="Name" />
+        </div>
+        <br />
+        <input type="submit" value="Edit Country" class="btn btn-sm btn-primary" />
+    </div>
+</form>
+<a asp-controller="Countries" asp-action="GetCountryById" asp-route-countryId="@Model.Id" class="btn btn-sm btn-primary">
+Cancel
+</a>
+
