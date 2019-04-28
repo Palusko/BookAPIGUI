@@ -40,9 +40,9 @@ namespace BookGUI.Controllers
         {
             var country = _countryRepository.GetCountryById(countryId);
             //country = null;
-            if(country == null)
+            if (country == null)
             {
-                ModelState.AddModelError("","Error getting a country");
+                ModelState.AddModelError("", "Error getting a country");
                 ViewBag.Message = $"There was a problem retrieving country with id {countryId} " +
                     $"from the database or no country with that id exists";
                 country = new CountryDto();
@@ -51,7 +51,7 @@ namespace BookGUI.Controllers
             var authors = _countryRepository.GetAuthorsFromACountry(countryId);
             if (authors.Count() <= 0)
             {
-                ViewBag.AuthorMessage = $"There are no authors from country with id {country.Id}";                    
+                ViewBag.AuthorMessage = $"There are no authors from country with id {country.Id}";
             }
 
             var countryAuthorsViewModel = new CountryAuthorsViewModel
@@ -88,10 +88,10 @@ namespace BookGUI.Controllers
                     var newCountry = newCountryTask.Result;
                     TempData["SuccessMessage"] = $"Country {newCountry.Name} was successfully created.";
 
-                    return RedirectToAction("GetCountryById", new { countryId = newCountry.Id});
+                    return RedirectToAction("GetCountryById", new { countryId = newCountry.Id });
                 }
 
-                if((int)result.StatusCode == 422)
+                if ((int)result.StatusCode == 422)
                 {
                     ModelState.AddModelError("", "Country Already Exists!");
                 }
@@ -107,15 +107,11 @@ namespace BookGUI.Controllers
         [HttpGet]
         public IActionResult UpdateCountry(int countryId)
         {
-            CountryDto countryToUpdate = null;
-            using (var client = new HttpClient())
+            var countryToUpdate = _countryRepository.GetCountryById(countryId);
+            if (countryToUpdate == null)
             {
-                countryToUpdate = _countryRepository.GetCountryById(countryId);
-                if(countryToUpdate == null)
-                {
-                    ModelState.AddModelError("", "Error getting country");
-                    countryToUpdate = new CountryDto();
-                }
+                ModelState.AddModelError("", "Error getting country");
+                countryToUpdate = new CountryDto();
             }
 
             return View(countryToUpdate);

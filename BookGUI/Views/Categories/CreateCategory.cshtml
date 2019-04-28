@@ -1,0 +1,19 @@
+﻿@model BookApiProject.Models.Category
+@{
+    ViewData["Title"] = "CreateCountry";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Add New Category</h1>
+<form asp-controller="Categories" asp-action="CreateCategory" method="post">
+    <div class="form-group">
+        <div>
+            <label asp-for="Name">Category Name:</label>
+        </div>
+        <div>
+            <input asp-for="Name" />
+        </div>
+        <br />
+        <input type="submit" value="Add Category" class="btn btn-sm btn-primary" />
+    </div>
+</form>
+

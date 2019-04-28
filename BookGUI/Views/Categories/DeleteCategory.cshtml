@@ -1,0 +1,20 @@
+﻿@model BookApiProject.Dtos.CategoryDto
+@{
+    ViewData["Title"] = "DeleteCategory";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Delete Category @Model.Name ?</h1>
+<br />
+<form asp-controller="Categories" asp-action="DeleteCategory" asp-route-categoryId="@Model.Id"
+      asp-route-categoryName="@Model.Name" method="post">
+    <div>
+        <p>
+            <strong>Category Name: </strong> @Model.Name
+        </p>
+        <input type="submit" value="Delete Category" class="btn btn-sm btn-danger" />
+    </div>
+</form>
+<a asp-controller="Categories" asp-action="GetCategoryById" asp-route-categoryId="@Model.Id" class="btn btn-sm btn-primary">
+    Cancel
+</a>
+

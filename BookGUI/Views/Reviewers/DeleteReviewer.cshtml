@@ -1,0 +1,19 @@
+﻿@model BookApiProject.Dtos.ReviewerDto
+@{
+    ViewData["Title"] = "DeleteReviewer";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Delete Reviewer @Model.FirstName @Model.LastName ? WARNING: All reviewer of this reviewer will be deleted too!</h1>
+<br />
+<form asp-controller="Reviewers" asp-action="DeleteReviewer" asp-route-reviewerId="@Model.Id"
+      asp-route-firstName="@Model.FirstName" asp-route-lastName="@Model.LastName" method="post">
+    <div>
+        <p>
+            <strong>Reviewer Name: </strong> @Model.FirstName @Model.LastName
+        </p>
+        <input type="submit" value="Delete Reviewer" class="btn btn-sm btn-danger" />
+    </div>
+</form>
+<a asp-controller="Reviewers" asp-action="GetReviewerById" asp-route-reviewerId="@Model.Id" class="btn btn-sm btn-primary">
+    Cancel
+</a>
