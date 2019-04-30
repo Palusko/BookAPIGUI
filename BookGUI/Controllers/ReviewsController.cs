@@ -34,6 +34,7 @@ namespace BookGUI.Controllers
                 ViewBag.Message = "There was a problem retrieving reviews from the database or no review exists";
             }
 
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
             return View(reviews);
         }
 
@@ -229,6 +230,64 @@ namespace BookGUI.Controllers
         [HttpGet]
         public IActionResult DeleteReview(int reviewId)
         {
+            var reviewDto = _reviewRepository.GetReviewById(reviewId);
+            var reviewerDto = _reviewerRepository.GetReviewerOfAReview(reviewId);
+            var bookDto = _reviewRepository.GetBookOfAReview(reviewId);
+
+            Review review = null;
+
+            if (reviewDto == null || reviewerDto == null || bookDto == null)
+            {
+                ModelState.AddModelError("", "Some kind of error getting review, reviewer, or book");
+                review = new Review();
+            }
+            else
+            {
+                review = new Review
+                {
+                    Id = reviewDto.Id,
+                    Headline = reviewDto.Headline,
+                    Rating = reviewDto.Rating,
+                    ReviewText = reviewDto.ReviewText,
+                    Reviewer = new Reviewer
+                    {
+                        Id = reviewerDto.Id,
+                        FirstName = reviewerDto.FirstName,
+                        LastName = reviewerDto.LastName
+                    },
+                    Book = new Book
+                    {
+                        Id = bookDto.Id,
+                        Title = bookDto.Title,
+                        Isbn = bookDto.Isbn,
+                        DatePublished = bookDto.DatePublished
+                    }
+                };
+            }
+
+            return View(review);
+        }
+
+        [HttpPost, ActionName("DeleteReview")]
+        public IActionResult DeleteReviewPost(int reviewId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:60039/api/");
+                var responseTask = client.DeleteAsync($"reviews/{reviewId}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = "Review was deleted";
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", "Some kind of error. Review not deleted!");
+            }
+
             var reviewDto = _reviewRepository.GetReviewById(reviewId);
             var reviewerDto = _reviewerRepository.GetReviewerOfAReview(reviewId);
             var bookDto = _reviewRepository.GetBookOfAReview(reviewId);
