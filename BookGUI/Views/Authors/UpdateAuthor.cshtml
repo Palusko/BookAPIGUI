@@ -1,0 +1,46 @@
+﻿@model BookApiProject.Models.Author
+@{
+    ViewData["Title"] = "UpdateAuthor";
+}
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Update author</h1>
+<form asp-controller="Authors" asp-action="UpdateAuthor" method="post">
+    <div class="form-group">
+        <input asp-for="Id" hidden />
+        <div class="row">
+            <div class="col-sm-2">
+                <label asp-for="Country">Author's Country</label>
+            </div>
+            <div class="col-sm-3">
+                @await Component.InvokeAsync("CountriesList")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <label asp-for="FirstName">First Name</label>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="FirstName" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <label asp-for="LastName">Last Name</label>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="LastName" />
+            </div>
+        </div>
+        <br />
+        <input type="submit" value="Update Author" class="btn-sm btn btn-primary" />
+    </div>
+</form>
+<a asp-controller="Authors" asp-action="GetAuthorById" asp-route-authorId="@Model.Id" class="btn btn-sm btn-primary">
+    Cancel
+</a>
+
+
+
+
+

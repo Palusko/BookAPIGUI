@@ -1,0 +1,22 @@
+﻿@model BookApiProject.Dtos.AuthorDto
+@{
+    ViewData["Title"] = "DeleteAuthor";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Delete Author @Model.FirstName @Model.LastName ?</h1>
+<br />
+<form asp-controller="Authors" asp-action="DeleteAuthor" asp-route-authorFirstName="@Model.FirstName"
+asp-route-authorLastName="@Model.LastName" asp-route-authorId="@Model.Id" method="post">
+    <div>
+        <p>
+            <strong>Author Name: </strong> @Model.FirstName @Model.LastName
+        </p>
+        <input type="submit" value="Delete Author" class="btn btn-sm btn-danger" />
+    </div>
+</form>
+<a asp-controller="Authors" asp-action="GetAuthorById" asp-route-authorId="@Model.Id" class="btn btn-sm btn-primary">
+    Cancel
+</a>
+
+
+
