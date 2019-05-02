@@ -1,4 +1,5 @@
 ﻿using BookApiProject.Dtos;
+using BookGUI.Components;
 using BookGUI.Services;
 using BookGUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -122,6 +123,30 @@ namespace BookGUI.Controllers
             }
 
             return View(completeBookViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult CreateBook()
+        {
+            var authors = _authorRepository.GetAuthors();
+            var categories = _categoryRepository.GetCategories();
+
+            if (authors.Count() <= 0 || categories.Count() <= 0)
+            {
+                ModelState.AddModelError("", "Some kind of error getting authors or categories");
+            }
+
+            var authorList = new AuthorsList(authors.ToList());
+            var categoryList = new CategoriesList(categories.ToList());
+
+            var createUpdateBook = new CreateUpdateBookViewModel
+            {
+                AuthorSelectListItems = authorList.GetAuthorsList(),
+                CategorySelectListItems = categoryList.GetCategoriesList()
+            };
+
+            return View(createUpdateBook);
+
         }
     }
 }
