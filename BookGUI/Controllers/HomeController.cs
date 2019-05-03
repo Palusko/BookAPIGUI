@@ -1,4 +1,5 @@
 ﻿using BookApiProject.Dtos;
+using BookApiProject.Models;
 using BookGUI.Components;
 using BookGUI.Services;
 using BookGUI.ViewModels;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BookGUI.Controllers
@@ -122,6 +124,7 @@ namespace BookGUI.Controllers
                 ViewBag.BookMessage = "There was an error retrieving a complete book record";
             }
 
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
             return View(completeBookViewModel);
         }
 
@@ -147,6 +150,77 @@ namespace BookGUI.Controllers
 
             return View(createUpdateBook);
 
+        }
+
+        [HttpPost]
+        public IActionResult CreateBook(IEnumerable<int> AuthorIds, IEnumerable<int> CategoryIds, 
+            CreateUpdateBookViewModel bookToCreate)
+        {
+            using (var client = new HttpClient())
+            {
+                var book = new Book()
+                {
+                    Id = bookToCreate.Book.Id,
+                    Isbn = bookToCreate.Book.Isbn,
+                    Title = bookToCreate.Book.Title,
+                    DatePublished = bookToCreate.Book.DatePublished
+
+                    //books?authId=?&authId=?&catId=?
+                };
+
+                var uriParameters = GetAuthorsCategoriesUri(AuthorIds.ToList(), CategoryIds.ToList());
+
+                client.BaseAddress = new Uri("http://localhost:60039/api/");
+                var responseTask = client.PostAsJsonAsync($"books?{uriParameters}", book);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTaskNewBook = result.Content.ReadAsAsync<Book>();
+                    readTaskNewBook.Wait();
+
+                    var newBook = readTaskNewBook.Result;
+
+                    TempData["SuccessMessage"] = $"Book {book.Title} was successfully created.";
+                    return RedirectToAction("GetBookById", new { bookId = newBook.Id });
+                }
+
+                if((int)result.StatusCode == 422)
+                {
+                    ModelState.AddModelError("", "ISBN already Exists!");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error! Book not created!");
+                }                
+            }
+
+            var authorList = new AuthorsList(_authorRepository.GetAuthors().ToList());
+            var categoryList = new CategoriesList(_categoryRepository.GetCategories().ToList());
+            bookToCreate.AuthorSelectListItems = authorList.GetAuthorsList(AuthorIds.ToList());
+            bookToCreate.CategorySelectListItems = categoryList.GetCategoriesList(CategoryIds.ToList());
+            bookToCreate.AuthorIds = AuthorIds.ToList();
+            bookToCreate.CategoryIds = CategoryIds.ToList();
+
+            return View(bookToCreate);
+        }
+
+        private string GetAuthorsCategoriesUri(List<int> authorIds, List<int> categoryIds)
+        {
+            var uri = "";
+            foreach(var authorId in authorIds)
+            {
+                uri += $"authId={authorId}&";
+            }
+
+            foreach (var categoryId in categoryIds)
+            {
+                uri += $"catId={categoryId}&";
+            }
+
+            return uri;
         }
     }
 }
