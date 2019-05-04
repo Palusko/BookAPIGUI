@@ -65,6 +65,7 @@ namespace BookGUI.Controllers
                 });
             }
 
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
             return View(bookAuthorsCategoriesRatingViewModel);
         }
 
@@ -205,6 +206,105 @@ namespace BookGUI.Controllers
             bookToCreate.CategoryIds = CategoryIds.ToList();
 
             return View(bookToCreate);
+        }
+
+        [HttpGet]
+        public IActionResult UpdateBook(int bookId)
+        {
+            var bookDto = _bookRepository.GetBookById(bookId);
+            var authorList = new AuthorsList(_authorRepository.GetAuthors().ToList());
+            var categoryList = new CategoriesList(_categoryRepository.GetCategories().ToList());
+
+            var bookViewModel = new CreateUpdateBookViewModel
+            {
+                Book = bookDto,
+                AuthorSelectListItems = authorList.GetAuthorsList(_authorRepository.GetAuthorsOfABook(bookId)
+                                        .Select(a => a.Id).ToList()),
+                CategorySelectListItems = categoryList.GetCategoriesList(_categoryRepository.GetAllCategoriesOfABook(bookId)
+                                        .Select(c => c.Id).ToList())
+            };
+
+            return View(bookViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateBook(IEnumerable<int> AuthorIds, IEnumerable<int>CategoryIds, 
+            CreateUpdateBookViewModel bookToUpdate)
+        {
+            using(var client = new HttpClient())
+            {
+                var book = new Book()
+                {
+                    Id = bookToUpdate.Book.Id,
+                    Isbn = bookToUpdate.Book.Isbn,
+                    Title = bookToUpdate.Book.Title,
+                    DatePublished = bookToUpdate.Book.DatePublished
+                };
+
+                var uriParameters = GetAuthorsCategoriesUri(AuthorIds.ToList(), CategoryIds.ToList());
+
+                client.BaseAddress = new Uri("http://localhost:60039/api/");
+                var responseTask = client.PutAsJsonAsync($"books/{book.Id}?{uriParameters}", book);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = $"Book {book.Title} was successfully updated.";
+                    return RedirectToAction("GetBookById", new { bookId = book.Id });
+                }
+
+                if ((int)result.StatusCode == 422)
+                {
+                    ModelState.AddModelError("", "ISBN already Exists!");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error! Book not created!");
+                }
+            }
+
+            var authorList = new AuthorsList(_authorRepository.GetAuthors().ToList());
+            var categoryList = new CategoriesList(_categoryRepository.GetCategories().ToList());
+            bookToUpdate.AuthorSelectListItems = authorList.GetAuthorsList(AuthorIds.ToList());
+            bookToUpdate.CategorySelectListItems = categoryList.GetCategoriesList(CategoryIds.ToList());
+            bookToUpdate.AuthorIds = AuthorIds.ToList();
+            bookToUpdate.CategoryIds = CategoryIds.ToList();
+
+            return View(bookToUpdate);
+        }
+
+        [HttpGet]
+        public IActionResult DeleteBook(int bookId)
+        {
+            var bookDto = _bookRepository.GetBookById(bookId);
+
+            return View(bookDto);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteBook(int bookId, string bookTitle)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:60039/api/");
+                var responseTask = client.DeleteAsync($"books/{bookId}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = $"Book {bookTitle} was successfully deleted.";
+
+                    return RedirectToAction("Index");
+                }
+                
+                ModelState.AddModelError("", "Some kind of error. Book not deleted!");
+            }
+
+            var bookDto = _bookRepository.GetBookById(bookId);
+            return View(bookDto);
         }
 
         private string GetAuthorsCategoriesUri(List<int> authorIds, List<int> categoryIds)

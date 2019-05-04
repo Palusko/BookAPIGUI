@@ -1,0 +1,59 @@
+﻿@model BookGUI.ViewModels.CreateUpdateBookViewModel
+@{
+    ViewData["Title"] = "UpdateBook";
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>Update Book</h1>
+<form asp-controller="Home" asp-action="UpdateBook" method="post">
+    <div class="form-group">
+        <input asp-for="Book.Id" hidden />
+        <div class="row">
+            <div class="col-sm-3">
+                <label asp-for="Book.Title">Title:</label>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="Book.Title" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label asp-for="Book.Isbn">Isbn:</label>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="Book.Isbn" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label asp-for="Book.DatePublished">Date Published:</label>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="Book.DatePublished" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label asp-for="AuthorSelectListItems">Authors:</label>
+            </div>
+            <div class="col-sm-3">
+                <select asp-for="AuthorIds" multiple asp-items="@Model.AuthorSelectListItems"
+                        style="min-height:200px;"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label asp-for="CategorySelectListItems">Categories:</label>
+            </div>
+            <div class="col-sm-3">
+                <select asp-for="CategoryIds" multiple asp-items="@Model.CategorySelectListItems"
+                        style="min-height:200px;"></select>
+            </div>
+        </div>
+        <br />
+        <input type="submit" value="Update Book" class="btn btn-sm btn-primary" />
+    </div>
+</form>
+<a asp-controller="Home" asp-action="GetBookById" asp-route-bookId="@Model.Book.Id" class="btn btn-sm btn-primary">
+Cancel
+</a>
+
